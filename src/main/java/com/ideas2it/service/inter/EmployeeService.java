@@ -18,17 +18,11 @@ public interface EmployeeService {
 	
 	Trainer getTrainerById(Integer id);
 	
-	void updateTrainerById(Integer id, String firstName, String lastName, String designation, 
-			String department, String phoneNumber, String emailId, 
-			String dateOfBirth, String previousExperience, 
-			String dateOfJoining, String salary);
+	void updateTrainerById(Trainer trainer);
 
 	void deleteTrainerById(Integer id);
 
-	Integer addTrainee(Integer id, String firstName, String lastName, String designation,
-			String department, Long phoneNumber, String emailId,  
-			String dateOfBirth, Float previousExperience, String dateOfJoining, 
-			Integer passedOutYear, Set<Skills> skills);
+	Integer addTrainee(Trainee trainee);
 	
 	List<Trainee> getAllTrainees();
 	
@@ -36,10 +30,7 @@ public interface EmployeeService {
 	
 	Trainee getTraineeById(Integer id);
 	
-	void updateTraineeById(Integer id, String firstName, String lastName, String designation, 
-			String department, String phoneNumber, String emailId, 
-			String dateOfBirth, String previousExperience, 
-			String dateOfJoining, String passedOutYear, Set<Skills> skills);
+	void updateTraineeById(Trainee trainee);
 	
 	void deleteTraineeById(Integer id);
 	

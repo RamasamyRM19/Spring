@@ -8,7 +8,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.Set;
 
-import com.ideas2it.dao.impl.EmployeeDAOImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+
 import com.ideas2it.dao.inter.EmployeeDAO;
 import com.ideas2it.model.Skills;
 import com.ideas2it.model.Trainee;
@@ -23,22 +26,25 @@ import com.ideas2it.service.inter.EmployeeService;
  *
  * @author  Ramasamy R M
  */
+@Component
 public class EmployeeServiceImpl implements EmployeeService {
 
-    private EmployeeDAO employeeDAO = new EmployeeDAOImpl();
+    private EmployeeDAO employeeDAO;
 
+    public EmployeeServiceImpl(EmployeeDAO employeeDAO) {
+        this.employeeDAO = employeeDAO;
+    }
     /**
      * <p>
      * Create New Trainer by passing object trainer for Trainer.
      * </p>
      *
-     * @param Integer id, String firstName, String lastName, String designation,
-     *        String department, Long phoneNumber, String emailId, String dateOfBirth, 
-     *        Float previousExperience, String dateOfJoining, Long salary
+     * @param trainer
      * @return Integer trainer
      */
     public Integer addTrainer(Trainer trainer) {
         Integer rowsAffected = null;
+        System.out.println("Service - Insert page Entered");
         rowsAffected = employeeDAO.insertTrainer(trainer);
         return rowsAffected;
     }
@@ -63,7 +69,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * exists or not in the trainers
      * </p>
      *
-     * @param Integer id
+     * @param id
      * @return Boolean true, boolean false
      */
     public boolean checkTrainerById(Integer id) {
@@ -81,7 +87,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * name, designation, department,phone number, salary & experience. 
      * </p>
      *
-     * @param Integer id 
+     * @param id
      * @return List<Trainer> trainers
      */
     public Trainer getTrainerById(Integer id) { 
@@ -95,51 +101,12 @@ public class EmployeeServiceImpl implements EmployeeService {
      * name, designation, department,phone number, salary & experience for the particular id. 
      * </p>
      *
-     * @param Integer id, String firstName, String lastName, String designation, String department, 
-     *        Long phoneNumber, String emailId, String dateOfBirth, Float previousExperience, 
-     *        String dateOfJoining, Long salary
+     * @param trainer
      * @return String
      */
-    public void updateTrainerById(Integer id, String firstName, String lastName, String designation, 
-            String department, String phoneNumber, String emailId, 
-            String dateOfBirth, String previousExperience, 
-            String dateOfJoining, String salary) {
-        List<Trainer> trainers = employeeDAO.retrieveAllTrainers();
-        for (Trainer trainer : trainers) {
-            if ((trainer.getId()).equals(id)) {
-                if (!firstName.isEmpty()) {
-                    trainer.setFirstName(firstName);
-                }
-                if (!lastName.isEmpty()) {
-                    trainer.setLastName(lastName);
-                }
-                if (!designation.isEmpty()) {
-                    trainer.setDesignation(designation);
-                }
-                if (!department.isEmpty()) {
-                    trainer.setDepartment(department);
-                }
-                if (!phoneNumber.isEmpty()) {
-                    trainer.setPhoneNumber(Long.parseLong(phoneNumber));
-                }
-                if (!emailId.isEmpty()) {
-                    trainer.setEmailId(emailId);
-                }
-                if (!dateOfBirth.isEmpty()) {
-                    trainer.setDateOfBirth(dateOfBirth);
-                }
-                if (!previousExperience.isEmpty()) {
-                    trainer.setPreviousExperience(Float.parseFloat(previousExperience));
-                }
-                if (!dateOfJoining.isEmpty()) {
-                    trainer.setDateOfJoining(dateOfJoining);
-                }
-                if (!salary.isEmpty()) {
-                    trainer.setSalary(Long.parseLong(salary));
-                }   
-                employeeDAO.updateTrainerById(trainer);
-            }
-        }
+    public void updateTrainerById(Trainer trainer) {
+       // List<Trainer> trainers = employeeDAO.retrieveAllTrainers();
+        employeeDAO.updateTrainerById(trainer);
 		//return trainers;
     }
 
@@ -149,7 +116,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * all the details for the particular id.  
      * </p>
      *
-     * @param Integer id
+     * @param id
      * @return 
      */
     public void deleteTrainerById(Integer id) {
@@ -161,18 +128,11 @@ public class EmployeeServiceImpl implements EmployeeService {
      * Create New Trainee by passing object trainee for Trainee.
      * </p>
      *
-     * @param Integer id, String firstName, String lastName, String designation,
-     *        String department, long phoneNumber, String dateOfBirth, 
-     *        String dateOfJoining, int passedOutYear, String listOfSkills 
+     * @param trainee
      * @return void
      */
-    public Integer addTrainee(Integer id, String firstName, String lastName, String designation,
-            String department, Long phoneNumber, String emailId,  
-            String dateOfBirth, Float previousExperience, String dateOfJoining, 
-            Integer passedOutYear, Set<Skills> skills) {
+    public Integer addTrainee(Trainee trainee) {
         Integer rowsAffected = null;
-        Trainee trainee = new Trainee(id, firstName, lastName, designation, department, phoneNumber, emailId,
-                dateOfBirth, previousExperience, dateOfJoining, passedOutYear, skills);
         rowsAffected = employeeDAO.insertTrainee(trainee);
         return rowsAffected;
     }
@@ -197,7 +157,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * exists or not in the trainees
      * </p>
      *
-     * @param Integer id
+     * @param id
      * @return boolean true, boolean false
      */
     public Boolean checkTraineeById(Integer id) {
@@ -216,7 +176,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * name, designation, department, phone number, passed out year & skills. 
      * </p>
      *
-     * @param Integer id - employee id value for the Trainee display operation
+     * @param id
      * @return Trainee trainees
      */
     public Trainee getTraineeById(Integer id) { 
@@ -231,56 +191,13 @@ public class EmployeeServiceImpl implements EmployeeService {
      * details for the particular key. 
      * </p>
      *
-     * @param Integer id, String firstName, String lastName, String designation, String department, 
-              long phoneNumber, String dateOfBirth, String dateOfJoining, Integer passedOutYear, 
-              String listOfSkills
+     * @param trainee
      * @return String
      */
-    public void updateTraineeById(Integer id, String firstName, String lastName, String designation, 
-            String department, String phoneNumber, String emailId, 
-            String dateOfBirth, String previousExperience, 
-            String dateOfJoining, String passedOutYear, Set<Skills> skills) {
-        List<Trainee> trainees = employeeDAO.retrieveAllTrainees();
-        for (Trainee trainee : trainees) {
-            if ((trainee.getId()).equals(id)) {
-                if (!firstName.isEmpty()) {
-                    trainee.setFirstName(firstName);
-                }
-                if (!lastName.isEmpty()) {
-                    trainee.setLastName(lastName);
-                }
-                if (!designation.isEmpty()) {
-                    trainee.setDesignation(designation);
-                }
-                if (!department.isEmpty()) {
-                    trainee.setDepartment(department);
-                }
-                if (!phoneNumber.isEmpty()) {
-                    trainee.setPhoneNumber(Long.parseLong(phoneNumber));
-                }
-                if (!emailId.isEmpty()) {
-                    trainee.setEmailId(emailId);
-                }
-                if (!dateOfBirth.isEmpty()) {
-                    trainee.setDateOfBirth(dateOfBirth);
-                }
-                if (!previousExperience.isEmpty()) {
-                    trainee.setPreviousExperience(Float.parseFloat(previousExperience));
-                }
-                if (!dateOfJoining.isEmpty()) {
-                    trainee.setDateOfJoining(dateOfJoining);
-                }
-                if (!passedOutYear.isEmpty()) {
-                    trainee.setPassedOutYear(Integer.parseInt(passedOutYear));
-                }
-                if (!skills.isEmpty()) {
-                    trainee.setSkills(skills);
-                }
-                System.out.println(skills);
+    public void updateTraineeById(Trainee trainee) {
                 employeeDAO.updateTraineeById(trainee);
             }
-        }
-    }  
+
 
     /**
      * <p>
@@ -288,7 +205,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * all the details for the particular id.  
      * </p>
      *
-     * @param Integer id
+     * @param id
      * @return 
      */
     public void deleteTraineeById(Integer id) {
@@ -301,7 +218,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * the matcher() method creates a matcher that will match the given input against this pattern
      * </p>
      *
-     * @param String firstName
+     * @param firstName
      * @return Boolean true, Boolean false 
      */   
     public Boolean isValidFirstName(String firstName) {
@@ -314,7 +231,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * the matcher() method creates a matcher that will match the given input against this pattern
      * </p>
      *
-     * @param String lastName
+     * @param lastName
      * @return Boolean true, Boolean false 
      */   
     public Boolean isValidLastName(String lastName) {
@@ -327,7 +244,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * the matcher() method creates a matcher that will match the given input against this pattern
      * </p>
      *
-     * @param String str
+     * @param str
      * @return Boolean true, Boolean false
      */    
     public Boolean isValidPhoneNumber(String str) {  
@@ -342,7 +259,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * the matcher() method creates a matcher that will match the given input against this pattern
      * </p>
      *
-     * @param String emailId
+     * @param emailId
      * @return Boolean true, Boolean false
      */   
     public Boolean isValidEmailId(String emailId) {
@@ -369,7 +286,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * eligible employee
      * </p>
      *
-     * @param LocalDate birthDate
+     * @param birthDate
      * @return Boolean true, Boolean false
      */   
     public Boolean isValidEmployee(LocalDate birthDate) {
@@ -392,7 +309,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * It compares the current date & joining date
      * </p>
      *
-     * @param LocalDate date
+     * @param date
      * @return Boolean true, Boolean false
      */   
     public Boolean isFutureDate(LocalDate date) {

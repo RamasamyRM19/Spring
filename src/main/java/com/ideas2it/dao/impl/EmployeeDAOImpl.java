@@ -2,6 +2,7 @@ package com.ideas2it.dao.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
 import org.hibernate.Session;
@@ -9,9 +10,9 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
 import com.ideas2it.dao.inter.EmployeeDAO;
-import com.ideas2it.model.Employee;
 import com.ideas2it.model.Trainee;
 import com.ideas2it.model.Trainer;
+import org.springframework.stereotype.Component;
 
 /**
  * EmployeeDataAccessObject contains the methods to perform the database
@@ -21,15 +22,16 @@ import com.ideas2it.model.Trainer;
  *
  * @author Ramasamy R M
  */
+@Component
 public class EmployeeDAOImpl implements EmployeeDAO {
 
-	private SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
+	private SessionFactory sessionFactory = new Configuration().configure("hibernate/properties/hibernate.cfg.xml").buildSessionFactory();
 	private Session session = null;
 
 	/**
 	 * Insert Trainer Details
 	 *
-	 * @param Trainer trainer
+	 * @param trainer
 	 * @return Integer rowsAffected
 	 */
 	public Integer insertTrainer(Trainer trainer) {
@@ -66,7 +68,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 	/**
 	 * Get the particular Trainer detail 
 	 *
-	 * @param Integer id
+	 * @param id
 	 * @return List<Trainer> trainers
 	 */
 	public Trainer retrieveTrainerById(Integer id) {
@@ -83,7 +85,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 	/**
 	 * Update the particular trainer detail by id
 	 *
-	 * @param Trainer trainer
+	 * @param trainer
 	 * @return void
 	 */
 	public void updateTrainerById(Trainer trainer) {
@@ -102,7 +104,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 	/**
 	 * Delete the particular Trainer detail
 	 *
-	 * @param Integer id
+	 * @param id
 	 * @return void
 	 */
 	public void deleteTrainerById(Integer id) {
@@ -120,7 +122,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 	/**
 	 * Insert Trainee Details
 	 *
-	 * @param Trainee trainee
+	 * @param trainee
 	 * @return Integer rowsAffected
 	 */
 	public Integer insertTrainee(Trainee trainee) {
@@ -157,7 +159,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 	/**
 	 * Get the particular Trainee detail
 	 *
-	 * @param Integer id
+	 * @param id
 	 * @return Trainee trainee
 	 */
 	public Trainee retrieveTraineeById(Integer id) {
@@ -174,7 +176,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 	/**
 	 * Update the particular trainee detail by id
 	 *
-	 * @param Trainee trainee
+	 * @param trainee
 	 * @return void
 	 */
 	public void updateTraineeById(Trainee trainee) {
@@ -194,7 +196,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 	/**
 	 * Delete the particular Trainee detail 
 	 *
-	 * @param Integer id
+	 * @param id
 	 * @return void
 	 */
 	public void deleteTraineeById(Integer id) {
