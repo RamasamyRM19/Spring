@@ -29,7 +29,7 @@ public interface EmployeeService {
 	Boolean checkTraineeById(Integer id);
 	
 	Trainee getTraineeById(Integer id);
-	
+
 	void updateTraineeById(Trainee trainee);
 	
 	void deleteTraineeById(Integer id);

@@ -2,20 +2,20 @@ package com.ideas2it.controller;
 
 import com.ideas2it.model.Skills;
 import com.ideas2it.model.Trainee;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ideas2it.model.Trainer;
 import com.ideas2it.service.inter.EmployeeService;
 
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 public class EmployeeController {
@@ -52,10 +52,67 @@ public class EmployeeController {
         System.out.println("Controller Entered");
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("trainee", new Trainee());
-        modelAndView.addObject("skills", new Skills());
         modelAndView.addObject("action", "insertTrainee");
         modelAndView.setViewName("CreateTrainee");
         return modelAndView;
+    }
+
+    /**
+     * directs to trainee form
+     *
+     * @param model
+     * @return SaveTrainee
+     */
+    /*@RequestMapping("/SaveTrainee")
+    public String TraineeForm(Model model) {
+        model.addAttribute("trainee", new Trainee());
+        return ("SaveTrainee");
+    }*/
+
+    /**
+     * add trainee details to trainee object
+     *
+     * @param trainee
+     * @return redirect:/viewTrainees
+     */
+    @RequestMapping(value = "/insertTrainee")
+    public ModelAndView insertTrainee(@ModelAttribute("trainee") Trainee trainee) {
+        int id = employeeService.addTrainee(trainee);
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("skill", new Skills());
+        modelAndView.addObject("id", id);
+        modelAndView.setViewName("/CreateSkills");
+        return modelAndView;
+    }
+
+    /**
+     * add trainee skill to skill object
+     *
+     * @param skill, id
+     * @return redirect:/viewTrainees
+     */
+    @RequestMapping(value = "/SaveSkill")
+    public String addSkill(@ModelAttribute("skill") Skills skill, int id) {
+
+        Trainee trainee = employeeService.getTraineeById(id);
+        String firstName = trainee.getFirstName();
+        String lastName = trainee.getLastName();
+        String designation = trainee.getDesignation();
+        String department = trainee.getDepartment();
+        Long phoneNumber = trainee.getPhoneNumber();
+        String emailId = trainee.getEmailId();
+        String dateOfBirth = trainee.getDateOfBirth();
+        Float previousExperience = trainee.getPreviousExperience();
+        String dateOfJoining = trainee.getDateOfJoining();
+        Integer passedOutYear = trainee.getPassedOutYear();
+        Set<Skills> skills = new LinkedHashSet<Skills>();
+        skills.add(skill);
+        Trainee updateTrainee = new Trainee(id, firstName, lastName,
+                designation, department, phoneNumber, emailId, dateOfBirth,
+                previousExperience, dateOfJoining, passedOutYear, skills);
+        //employeeService.updateTraineeById(updateTrainee);
+        employeeService.addTrainee(updateTrainee);
+        return ("redirect:/ViewTrainee");
     }
 
     @RequestMapping("insertTrainer")
@@ -68,18 +125,6 @@ public class EmployeeController {
             employeeService.updateTrainerById(trainer);
         }
         return "redirect:/ViewTrainer";
-    }
-
-    @RequestMapping("insertTrainee")
-    public String insertTrainee(@ModelAttribute("trainee") Trainee trainee, RedirectAttributes redirectAttributes) {
-        Integer employeeId = 0;
-        if (redirectAttributes.equals("insertTrainee")) {
-            System.out.println("Insert Trainee page Entered");
-            employeeId = employeeService.addTrainee(trainee);
-        } else {
-            employeeService.updateTraineeById(trainee);
-        }
-        return "redirect:/ViewTrainee";
     }
 
     @RequestMapping (value = "/ViewTrainer")
@@ -98,20 +143,17 @@ public class EmployeeController {
         return modelAndView;
     }
 
-    @GetMapping("/updateTrainer")
-    public String getTrainerById(@RequestParam("id") int trainerId, Model model) {
-        Trainer trainer = employeeService.getTrainerById(trainerId);
-        model.addAttribute("trainer", trainer);
-        model.addAttribute("action", "updateTrainer");
-        return "updateTrainer";
+    @RequestMapping(value = "/getTraineeById/{id}")
+    public String getTraineeById(@PathVariable int id, Model model) {
+        Trainee trainee = employeeService.getTraineeById(id);
+        model.addAttribute("command", trainee);
+        return ("UpdateTrainee");
     }
 
-    @GetMapping("/updateTrainee")
-    public String getTraineeById(@RequestParam("id") int traineeId, Model model) {
-        Trainee trainee = employeeService.getTraineeById(traineeId);
-        model.addAttribute("trainee", trainee);
-        model.addAttribute("action", "updateTrainee");
-        return "insertTrainee";
+    @RequestMapping(value = "/updateTraineeById/{id}", method = RequestMethod.POST)
+    public String updateTraineeById(@ModelAttribute("trainee") Trainee trainee) {
+        employeeService.updateTraineeById(trainee);
+        return ("redirect:/ViewTrainee");
     }
 
     @GetMapping("/deleteTrainer")

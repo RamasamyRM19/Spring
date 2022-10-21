@@ -3,6 +3,7 @@ package com.ideas2it.dao.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ideas2it.model.Skills;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
 import org.hibernate.Session;

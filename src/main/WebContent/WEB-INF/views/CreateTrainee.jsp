@@ -20,9 +20,8 @@
 	<div align="center">
 		<h1>Employee Register Form</h1>
 		    <form:form modelAttribute="trainee" action="insertTrainee?action=${action}" method="post">
-            <form:form modelAttribute="trainee" flag="insertTrainee?flag=${action}" method="post">
             <form:hidden path="id" />
-			<table style="with: 80%">
+            <table style="with: 80%">
 				<tr>
                     <td>First Name</td>
                 	<td><form:input type="text" path="firstName" name="firstName" /></td>
@@ -64,26 +63,11 @@
 					<td><form:input type="number" min="1900" max="2099" step="1"
 						value="2016" path = "passedOutYear" name="passedOutYear" /></td>
 				</tr>
-				<tr>
-					<th>Skill Name</th>
-					<th>Version</th>
-					<th>Last Used Year</th>
-					<th>Experience</th>
-				</tr>
-				<tr>
-				<td>
-                    <td><form:input type="text" name="skillName" path = "skillName" /></td>
-                    <td><form:input type="text" name="version" path = "skillVersion" /></td>
-                    <td><form:input type="number" name="lastUsedYear" path = "lastUsedYear" /></td>
-                    <td><form:input type="number" name="experience" path = "skillExperience" /></td>
-                </td>
-				</tr>
 			</table>
-			<input type="submit" id = "submit" value="Submit" />
+			<input type="submit" id = "submit" value="Proceed further to add skills" />
 			<input type="reset">
 			<input action="/" type="button" onclick="history.go(-1);" value="Back"/>
 		</form:form>
-        </form:form>
 	</div>
 </body>
 </html>

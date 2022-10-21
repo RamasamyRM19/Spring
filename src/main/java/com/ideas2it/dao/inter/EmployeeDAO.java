@@ -2,6 +2,7 @@ package com.ideas2it.dao.inter;
 
 import java.util.List;
 
+import com.ideas2it.model.Skills;
 import com.ideas2it.model.Trainee;
 import com.ideas2it.model.Trainer;
 
@@ -22,7 +23,7 @@ public interface EmployeeDAO {
 	List<Trainee> retrieveAllTrainees();
 	
 	Trainee retrieveTraineeById(Integer id);
-	
+
 	void updateTraineeById(Trainee trainee);
 	
 	void deleteTraineeById(Integer id);

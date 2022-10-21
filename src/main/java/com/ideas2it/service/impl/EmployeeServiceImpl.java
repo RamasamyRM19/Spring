@@ -181,7 +181,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     public Trainee getTraineeById(Integer id) { 
         Trainee trainee = new Trainee();
-        trainee = employeeDAO.retrieveTraineeById(id); 
+        trainee = employeeDAO.retrieveTraineeById(id);
         return trainee;
     }
 

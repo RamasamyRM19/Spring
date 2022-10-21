@@ -1,5 +1,6 @@
 package com.ideas2it.model;
 
+import com.ideas2it.model.Trainee;
 /**
  * Skills POJO class is to get and set Skill details
  *
@@ -15,6 +16,8 @@ public class Skills {
     private Integer lastUsedYear;
     private Float skillExperience;
     private Integer traineeId;
+
+    private Trainee trainee;
 
     public Skills() {
     }
@@ -75,6 +78,14 @@ public class Skills {
     public void setTraineeId(Integer traineeId) {
         this.traineeId = traineeId;
      }
+
+    public Trainee getTrainee() {
+        return trainee;
+    }
+
+    public void setTrainee(Trainee trainee) {
+        this.trainee = trainee;
+    }
 
     public String toString() {
         return ("\nSkillId : " + skillId + "List Of Skills : " + skillName + "\nVersion : " + skillVersion +

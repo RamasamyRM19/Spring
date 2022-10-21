@@ -3,6 +3,8 @@ package com.ideas2it.model;
 import java.util.Set;
 
 import com.ideas2it.model.Employee;
+import com.ideas2it.model.Skills;
+import com.ideas2it.service.inter.EmployeeService;
 
 /**
  * Trainee POJO class is to get and set Trainee details
@@ -21,7 +23,7 @@ public class Trainee extends Employee {
 
     public Trainee(Integer id, String firstName, String lastName, String designation, 
                    String department, Long phoneNumber, String emailId, String dateOfBirth, 
-                   Float previousExperience, String dateOfJoining, Integer passedOutYear, 
+                   Float previousExperience, String dateOfJoining, Integer passedOutYear,
                    Set<Skills> skills) {
         super(id, firstName, lastName, designation, department, phoneNumber, emailId, dateOfBirth, 
               previousExperience, dateOfJoining);
@@ -54,9 +56,7 @@ public class Trainee extends Employee {
      }
 
     public String toString() {
-        return (super.toString() + "\nPassed Out Year : " + passedOutYear  
-                + "\nSkills : " 
-                + skills.toString().replace("[", "").replace(",", "\n").replace("]", ""));
+        return (super.toString() + "\nPassed Out Year : " + passedOutYear);
     }
 
 	public boolean isEmpty() {

@@ -57,10 +57,7 @@
 				<td><%=skill.getLastUsedYear()%></td>
 				<td><%=skill.getSkillExperience()%></td>
 				<% } %>
-				<td><a
-					href="updateTrainee?id=<%= trainee.getId()%>">
-						<input class="update" type="button" value="Update">
-				</a></td>
+				<td><a href="EmployeeController?flag=getTraineeById&id=<%=trainee.getId()%>">Update</a></td>
 				<td><a
 					href="deleteTrainee?id=<%= trainee.getId()%>">
 						<input class="delete" type="button" value="Delete">
