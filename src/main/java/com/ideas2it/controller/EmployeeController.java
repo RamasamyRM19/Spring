@@ -31,12 +31,6 @@ public class EmployeeController {
         return "index";
     }
 
-    /*
-     * @RequestMapping(value = "/CreateTrainer") public String
-     * insertTrainer(@ModelAttribute Trainer trainer) {
-     * employeeService.addTrainer(trainer); return "redirect:/ViewTrainer"; }
-     */
-
     @GetMapping(value = "/CreateTrainer")
     public ModelAndView showTrainerForm() {
         System.out.println("Controller Entered");
@@ -56,18 +50,6 @@ public class EmployeeController {
         modelAndView.setViewName("CreateTrainee");
         return modelAndView;
     }
-
-    /**
-     * directs to trainee form
-     *
-     * @param model
-     * @return SaveTrainee
-     */
-    /*@RequestMapping("/SaveTrainee")
-    public String TraineeForm(Model model) {
-        model.addAttribute("trainee", new Trainee());
-        return ("SaveTrainee");
-    }*/
 
     /**
      * add trainee details to trainee object
@@ -95,23 +77,11 @@ public class EmployeeController {
     public String addSkill(@ModelAttribute("skill") Skills skill, int id) {
 
         Trainee trainee = employeeService.getTraineeById(id);
-        String firstName = trainee.getFirstName();
-        String lastName = trainee.getLastName();
-        String designation = trainee.getDesignation();
-        String department = trainee.getDepartment();
-        Long phoneNumber = trainee.getPhoneNumber();
-        String emailId = trainee.getEmailId();
-        String dateOfBirth = trainee.getDateOfBirth();
-        Float previousExperience = trainee.getPreviousExperience();
-        String dateOfJoining = trainee.getDateOfJoining();
-        Integer passedOutYear = trainee.getPassedOutYear();
         Set<Skills> skills = new LinkedHashSet<Skills>();
         skills.add(skill);
-        Trainee updateTrainee = new Trainee(id, firstName, lastName,
-                designation, department, phoneNumber, emailId, dateOfBirth,
-                previousExperience, dateOfJoining, passedOutYear, skills);
+        trainee.setSkills(skills);
         //employeeService.updateTraineeById(updateTrainee);
-        employeeService.addTrainee(updateTrainee);
+        employeeService.updateTraineeById(trainee);
         return ("redirect:/ViewTrainee");
     }
 
@@ -127,7 +97,22 @@ public class EmployeeController {
         return "redirect:/ViewTrainer";
     }
 
-    @RequestMapping (value = "/ViewTrainer")
+    @RequestMapping("updateTrainer")
+    public String updateTrainer(@ModelAttribute("trainer") Trainer trainer) {
+        employeeService.updateTrainerById(trainer);
+        return "redirect:/ViewTrainer";
+    }
+
+    @RequestMapping("updateTrainee")
+    public String updateTrainee(@ModelAttribute("trainee") Trainee trainee) {
+        Trainee trainee1 = employeeService.getTraineeById(trainee.getId());
+        Set<Skills> skills = trainee1.getSkills();
+        trainee.setSkills(skills);
+        employeeService.updateTraineeById(trainee);
+        return ("redirect:/ViewTrainee");
+    }
+
+    @RequestMapping(value = "/ViewTrainer")
     public ModelAndView viewTrainer() {
         List<Trainer> trainers = employeeService.getAllTrainers();
         ModelAndView modelAndView = new ModelAndView("ViewTrainer");
@@ -135,7 +120,7 @@ public class EmployeeController {
         return modelAndView;
     }
 
-    @RequestMapping (value = "/ViewTrainee")
+    @RequestMapping(value = "/ViewTrainee")
     public ModelAndView viewTrainee() {
         List<Trainee> trainees = employeeService.getAllTrainees();
         ModelAndView modelAndView = new ModelAndView("ViewTrainee");
@@ -143,30 +128,33 @@ public class EmployeeController {
         return modelAndView;
     }
 
-    @RequestMapping(value = "/getTraineeById/{id}")
-    public String getTraineeById(@PathVariable int id, Model model) {
+    @RequestMapping(value = "/getTraineeById")
+    public ModelAndView getTraineeById(@RequestParam int id) {
         Trainee trainee = employeeService.getTraineeById(id);
-        model.addAttribute("command", trainee);
-        return ("UpdateTrainee");
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("trainee", trainee);
+        modelAndView.setViewName("UpdateTrainee");
+        return modelAndView;
     }
 
-    @RequestMapping(value = "/updateTraineeById/{id}", method = RequestMethod.POST)
-    public String updateTraineeById(@ModelAttribute("trainee") Trainee trainee) {
-        employeeService.updateTraineeById(trainee);
-        return ("redirect:/ViewTrainee");
+    @RequestMapping(value = "/getTrainerById")
+    public ModelAndView getTrainerById(@RequestParam int id) {
+        Trainer trainer = employeeService.getTrainerById(id);
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("trainer", trainer);
+        modelAndView.setViewName("UpdateTrainer");
+        return modelAndView;
     }
 
     @GetMapping("/deleteTrainer")
-    public String deleteTrainer(@RequestParam int id, RedirectAttributes redirectAttributes)  {
+    public String deleteTrainer(@RequestParam int id, RedirectAttributes redirectAttributes) {
         employeeService.deleteTrainerById(id);
-        //  redirectAttributes.addFlashAttribute("msg",id + " SuccessFully Deleted");
         return "redirect:/ViewTrainer";
     }
 
     @GetMapping("/deleteTrainee")
     public String deleteTrainee(@RequestParam int id, RedirectAttributes redirectAttributes) {
         employeeService.deleteTraineeById(id);
-        //  redirectAttributes.addFlashAttribute("msg",id + " SuccessFully Deleted");
         return "redirect:/ViewTrainee";
     }
 }
