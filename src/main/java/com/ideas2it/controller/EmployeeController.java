@@ -1,8 +1,9 @@
 package com.ideas2it.controller;
 
-import com.ideas2it.model.Skills;
-import com.ideas2it.model.Trainee;
 import jakarta.servlet.http.HttpSession;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,13 +11,19 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.ideas2it.model.Skills;
+import com.ideas2it.model.Trainee;
 import com.ideas2it.model.Trainer;
 import com.ideas2it.service.inter.EmployeeService;
 
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
+/**
+ * EmployeeController class has the control to display
+ * Trainer & Trainee Details using model, service & dao
+ *
+ * @version 1.0 05 Sep 2022
+ *
+ * @author  Ramasamy R M
+ */
 @Controller
 public class EmployeeController {
 
@@ -26,11 +33,23 @@ public class EmployeeController {
         this.employeeService = employeeService;
     }
 
+    /**
+     * directs to index page
+     *
+     * @param
+     * @return index
+     */
     @RequestMapping("/")
     public String index() {
         return "index";
     }
 
+    /**
+     * directs to Trainer Form
+     *
+     * @param
+     * @return modelAndView
+     */
     @GetMapping(value = "/CreateTrainer")
     public ModelAndView showTrainerForm() {
         System.out.println("Controller Entered");
@@ -41,6 +60,12 @@ public class EmployeeController {
         return modelAndView;
     }
 
+    /**
+     * directs to Trainee Form
+     *
+     * @param
+     * @return modelAndView
+     */
     @GetMapping(value = "/CreateTrainee")
     public ModelAndView showTraineeForm() {
         System.out.println("Controller Entered");
@@ -55,7 +80,7 @@ public class EmployeeController {
      * add trainee details to trainee object
      *
      * @param trainee
-     * @return redirect:/viewTrainees
+     * @return modelAndView
      */
     @RequestMapping(value = "/insertTrainee")
     public ModelAndView insertTrainee(@ModelAttribute("trainee") Trainee trainee) {
@@ -71,7 +96,7 @@ public class EmployeeController {
      * add trainee skill to skill object
      *
      * @param skill, id
-     * @return redirect:/viewTrainees
+     * @return redirect:/ViewTrainee
      */
     @RequestMapping(value = "/SaveSkill")
     public String addSkill(@ModelAttribute("skill") Skills skill, int id) {
@@ -85,6 +110,12 @@ public class EmployeeController {
         return ("redirect:/ViewTrainee");
     }
 
+    /**
+     * add trainer details to trainer object
+     *
+     * @param trainer
+     * @return redirect:/ViewTrainer
+     */
     @RequestMapping("insertTrainer")
     public String insertTrainer(@ModelAttribute("trainer") Trainer trainer, RedirectAttributes redirectAttributes) {
         Integer employeeId = 0;
@@ -97,12 +128,24 @@ public class EmployeeController {
         return "redirect:/ViewTrainer";
     }
 
+    /**
+     * update trainer by id
+     *
+     * @param trainer 
+     * @return redirect:/ViewTrainer
+     */
     @RequestMapping("updateTrainer")
     public String updateTrainer(@ModelAttribute("trainer") Trainer trainer) {
         employeeService.updateTrainerById(trainer);
         return "redirect:/ViewTrainer";
     }
 
+    /**
+     * update trainee by id
+     *
+     * @param trainee 
+     * @return redirect:/ViewTrainee
+     */
     @RequestMapping("updateTrainee")
     public String updateTrainee(@ModelAttribute("trainee") Trainee trainee) {
         Trainee trainee1 = employeeService.getTraineeById(trainee.getId());
@@ -111,7 +154,12 @@ public class EmployeeController {
         employeeService.updateTraineeById(trainee);
         return ("redirect:/ViewTrainee");
     }
-
+    
+    /**
+     * shows all trainers
+     *
+     * @return ViewTrainer
+     */
     @RequestMapping(value = "/ViewTrainer")
     public ModelAndView viewTrainer() {
         List<Trainer> trainers = employeeService.getAllTrainers();
@@ -120,6 +168,11 @@ public class EmployeeController {
         return modelAndView;
     }
 
+    /**
+     * shows all trainees
+     *
+     * @return ViewTrainee
+     */
     @RequestMapping(value = "/ViewTrainee")
     public ModelAndView viewTrainee() {
         List<Trainee> trainees = employeeService.getAllTrainees();
@@ -128,6 +181,12 @@ public class EmployeeController {
         return modelAndView;
     }
 
+    /**
+     * get trainee by id
+     *
+     * @param id 
+     * @return UpdateTrainee
+     */
     @RequestMapping(value = "/getTraineeById")
     public ModelAndView getTraineeById(@RequestParam int id) {
         Trainee trainee = employeeService.getTraineeById(id);
@@ -137,6 +196,12 @@ public class EmployeeController {
         return modelAndView;
     }
 
+    /**
+     * get trainer by id
+     *
+     * @param id 
+     * @return UpdateTrainer
+     */
     @RequestMapping(value = "/getTrainerById")
     public ModelAndView getTrainerById(@RequestParam int id) {
         Trainer trainer = employeeService.getTrainerById(id);
@@ -146,12 +211,24 @@ public class EmployeeController {
         return modelAndView;
     }
 
+    /**
+     * delete trainer
+     *
+     * @param id 
+     * @return redirect:/ViewTrainer
+     */
     @GetMapping("/deleteTrainer")
     public String deleteTrainer(@RequestParam int id, RedirectAttributes redirectAttributes) {
         employeeService.deleteTrainerById(id);
         return "redirect:/ViewTrainer";
     }
 
+    /**
+     * delete trainee
+     *
+     * @param id 
+     * @return redirect:/ViewTrainee
+     */
     @GetMapping("/deleteTrainee")
     public String deleteTrainee(@RequestParam int id, RedirectAttributes redirectAttributes) {
         employeeService.deleteTraineeById(id);
