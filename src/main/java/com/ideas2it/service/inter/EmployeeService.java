@@ -2,35 +2,36 @@ package com.ideas2it.service.inter;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
+import java.util.Optional;
 
-import com.ideas2it.model.Skills;
+import com.ideas2it.dto.TraineeDto;
+import com.ideas2it.dto.TrainerDto;
 import com.ideas2it.model.Trainee;
 import com.ideas2it.model.Trainer;
 
 public interface EmployeeService {
 
-	Integer addTrainer(Trainer trainer);
+	Integer addTrainer(TrainerDto trainerDto);
 
-	List<Trainer> getAllTrainers();
+	List<TrainerDto> getAllTrainers();
 	
 	boolean checkTrainerById(Integer id);
 	
-	Trainer getTrainerById(Integer id);
+	TrainerDto getTrainerById(Integer id);
 	
-	void updateTrainerById(Trainer trainer);
+	void updateTrainerById(TrainerDto trainerDto);
 
 	void deleteTrainerById(Integer id);
 
-	Integer addTrainee(Trainee trainee);
+	Integer addTrainee(TraineeDto traineeDto);
 	
-	List<Trainee> getAllTrainees();
+	List<TraineeDto> getAllTrainees();
 	
 	Boolean checkTraineeById(Integer id);
 	
-	Trainee getTraineeById(Integer id);
-	
-	void updateTraineeById(Trainee trainee);
+	TraineeDto getTraineeById(Integer id);
+
+	void updateTraineeById(TraineeDto traineeDto);
 	
 	void deleteTraineeById(Integer id);
 	

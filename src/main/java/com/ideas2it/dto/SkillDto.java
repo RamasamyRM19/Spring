@@ -1,14 +1,6 @@
-package com.ideas2it.model;
+package com.ideas2it.dto;
 
-/**
- * Skills POJO class is to get and set Skill details
- *
- * @version 1.0 08 Sep 2022
- *
- * @author  Ramasamy R M
- */
-public class Skills {
-
+public class SkillDto {
     private Integer skillId;
     private String skillName;
     private String skillVersion;
@@ -16,13 +8,13 @@ public class Skills {
     private Float skillExperience;
     private Integer traineeId;
 
-    private Trainee trainee;
+    private TraineeDto traineeDto;
 
-    public Skills() {
+    public SkillDto() {
     }
 
-    public Skills(Integer skillId, String skillName, String skillVersion, Integer lastUsedYear, 
-                  Float skillExperience) {
+    public SkillDto(Integer skillId, String skillName, String skillVersion, Integer lastUsedYear,
+                    Float skillExperience) {
         this.skillId = skillId;
         this.skillName = skillName;
         this.skillVersion = skillVersion;
@@ -41,19 +33,19 @@ public class Skills {
     public String getSkillName() {
         return skillName;
     }
- 
+
     public void setSkillName(String skillName) {
         this.skillName = skillName;
     }
-  
+
     public String getSkillVersion() {
-        return this.skillVersion;
+        return skillVersion;
     }
 
     public void setSkillVersion(String skillVersion) {
         this.skillVersion = skillVersion;
     }
-   
+
     public Integer getLastUsedYear() {
         return lastUsedYear;
     }
@@ -69,21 +61,21 @@ public class Skills {
     public void setSkillExperience(Float skillExperience) {
         this.skillExperience = skillExperience;
     }
-    
+
     public Integer getTraineeId() {
         return traineeId;
     }
 
     public void setTraineeId(Integer traineeId) {
         this.traineeId = traineeId;
-     }
-
-    public Trainee getTrainee() {
-        return trainee;
     }
 
-    public void setTrainee(Trainee trainee) {
-        this.trainee = trainee;
+    public TraineeDto getTraineeDto() {
+        return traineeDto;
+    }
+
+    public void setTraineeDto(TraineeDto traineeDto) {
+        this.traineeDto = traineeDto;
     }
 
     public String toString() {

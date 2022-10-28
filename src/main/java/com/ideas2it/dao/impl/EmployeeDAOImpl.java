@@ -3,6 +3,9 @@ package com.ideas2it.dao.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ideas2it.dto.TraineeDto;
+import com.ideas2it.dto.TrainerDto;
+import com.ideas2it.model.Skills;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
 import org.hibernate.Session;
@@ -31,15 +34,15 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 	/**
 	 * Insert Trainer Details
 	 *
-	 * @param trainer
+	 * @param trainerDto
 	 * @return Integer rowsAffected
 	 */
-	public Integer insertTrainer(Trainer trainer) {
+	public Integer insertTrainer(TrainerDto trainerDto) {
 		Integer rowsAffected = 0;
 		try {
 			session = sessionFactory.openSession();
 			Transaction transaction = session.beginTransaction();
-			rowsAffected = (Integer) session.save(trainer);
+			rowsAffected = (Integer) session.save(trainerDto);
 			transaction.commit();
 		} finally {
 			session.close();
@@ -54,7 +57,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 	 * @return List<Trainer> trainers
 	 */
 	public List<Trainer> retrieveAllTrainers() {
-		List<Trainer> trainers = new ArrayList<Trainer>();
+		List<Trainer> trainers = new ArrayList<>();
 		try {
 			session = sessionFactory.openSession();
 			Query<Trainer> query = session.createQuery("FROM Trainer");
@@ -92,6 +95,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 		try {
 			session = sessionFactory.openSession();
 			Transaction transaction = session.beginTransaction();
+
 			if (!trainer.isEmpty()) {
 				session.merge(trainer);
 			}
@@ -145,7 +149,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 	 * @return List<Trainee> trainees
 	 */
 	public List<Trainee> retrieveAllTrainees() {
-		List<Trainee> trainees = new ArrayList<Trainee>();
+		List<Trainee> trainees = new ArrayList<>();
 		try {
 			session = sessionFactory.openSession();
 			String query = "FROM Trainee";
@@ -185,7 +189,6 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 			Transaction transaction = session.beginTransaction();
 			if (!trainee.isEmpty()) {
 				session.saveOrUpdate(trainee);
-				System.out.println(trainee);
 			}
 			transaction.commit();
 		} finally {

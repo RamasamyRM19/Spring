@@ -6,6 +6,9 @@
 <meta charset="UTF-8">
 <title>Employee Management</title>
 <style>
+body {
+background-color: #ccffff;
+}
 button {
 	padding: 14px 10%;
 	border-radius: 12px;
@@ -17,6 +20,10 @@ button {
 button:hover {
 	background-color: #4CAF50;
 }
+h1 {
+text-decoration: underline;
+    text-decoration-style: double;
+    }
 </style>
 </head>
 <body>

@@ -4,16 +4,17 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher; 
+import java.util.Optional;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.ideas2it.dto.TraineeDto;
+import com.ideas2it.dto.TrainerDto;
+import com.ideas2it.mapper.TraineeMapper;
+import com.ideas2it.mapper.TrainerMapper;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import com.ideas2it.dao.inter.EmployeeDAO;
-import com.ideas2it.model.Skills;
 import com.ideas2it.model.Trainee;
 import com.ideas2it.model.Trainer;
 import com.ideas2it.service.inter.EmployeeService;
@@ -39,15 +40,16 @@ public class EmployeeServiceImpl implements EmployeeService {
      * Create New Trainer by passing object trainer for Trainer.
      * </p>
      *
-     * @param trainer
+     * @param trainerDto
      * @return Integer trainer
      */
-    public Integer addTrainer(Trainer trainer) {
+    public Integer addTrainer(TrainerDto trainerDto) {
         Integer rowsAffected = null;
-        System.out.println("Service - Insert page Entered");
-        rowsAffected = employeeDAO.insertTrainer(trainer);
+        Trainer trainer = TrainerMapper.convertTrainerDtoToTrainer(trainerDto);
+        rowsAffected = employeeDAO.insertTrainer(trainerDto);
         return rowsAffected;
     }
+
 
     /**
      * <p>
@@ -57,9 +59,11 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param 
      * @return List<Trainer> trainers
      */
-    public List<Trainer> getAllTrainers() {
-        List<Trainer> trainers = new ArrayList<Trainer>();
-        trainers = employeeDAO.retrieveAllTrainers();
+    public List<TrainerDto> getAllTrainers() {
+        List<TrainerDto> trainers = new ArrayList<>();
+        for (Trainer trainer : employeeDAO.retrieveAllTrainers()) {
+            trainers.add(TrainerMapper.convertTrainerToTrainerDto(trainer));
+        }
         return trainers;
     }
 
@@ -73,12 +77,13 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @return Boolean true, boolean false
      */
     public boolean checkTrainerById(Integer id) {
+        Boolean isValidTrainerId = false;
         for (Trainer trainer : employeeDAO.retrieveAllTrainers()) {
             if (trainer.getId().equals(id)) {
-                return true;
+                isValidTrainerId = true;
             }
         }
-        return false;
+        return isValidTrainerId;
     }
 
     /**
@@ -90,9 +95,13 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param id
      * @return List<Trainer> trainers
      */
-    public Trainer getTrainerById(Integer id) { 
-        Trainer trainer = employeeDAO.retrieveTrainerById(id); 
-        return trainer;
+    public TrainerDto getTrainerById(Integer id) {
+        TrainerDto trainerDto = null;
+        Optional<Trainer> trainer = Optional.ofNullable(employeeDAO.retrieveTrainerById(id));
+        if (trainer.isPresent()) {
+            trainerDto = TrainerMapper.convertTrainerToTrainerDto(trainer.get());
+        }
+        return trainerDto;
     }
 
     /**
@@ -101,11 +110,12 @@ public class EmployeeServiceImpl implements EmployeeService {
      * name, designation, department,phone number, salary & experience for the particular id. 
      * </p>
      *
-     * @param trainer
+     * @param trainerDto
      * @return String
      */
-    public void updateTrainerById(Trainer trainer) {
+    public void updateTrainerById(TrainerDto trainerDto) {
        // List<Trainer> trainers = employeeDAO.retrieveAllTrainers();
+        Trainer trainer = TrainerMapper.convertTrainerDtoToTrainer(trainerDto);
         employeeDAO.updateTrainerById(trainer);
 		//return trainers;
     }
@@ -128,11 +138,12 @@ public class EmployeeServiceImpl implements EmployeeService {
      * Create New Trainee by passing object trainee for Trainee.
      * </p>
      *
-     * @param trainee
+     * @param traineeDto
      * @return void
      */
-    public Integer addTrainee(Trainee trainee) {
+    public Integer addTrainee(TraineeDto traineeDto) {
         Integer rowsAffected = null;
+        Trainee trainee = TraineeMapper.convertTraineeDtoToTrainee(traineeDto);
         rowsAffected = employeeDAO.insertTrainee(trainee);
         return rowsAffected;
     }
@@ -145,9 +156,11 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param 
      * @return List<Trainee> trainees
      */
-    public List<Trainee> getAllTrainees() {
-        List<Trainee> trainees = new ArrayList<Trainee>();
-        trainees = employeeDAO.retrieveAllTrainees();
+    public List<TraineeDto> getAllTrainees() {
+        List<TraineeDto> trainees = new ArrayList<>();
+        for (Trainee trainee : employeeDAO.retrieveAllTrainees()) {
+            trainees.add(TraineeMapper.convertTraineeToTraineeDto(trainee));
+        }
         return trainees;
     }
 
@@ -172,17 +185,20 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     /**
      * <p>
-     * Display specific Trainee by getting Id from the user. Which displays Id, 
-     * name, designation, department, phone number, passed out year & skills. 
+     * Display specific Trainee by getting Id from the user. Which displays Id,
+     * name, designation, department, phone number, passed out year & skills.
      * </p>
      *
      * @param id
      * @return Trainee trainees
      */
-    public Trainee getTraineeById(Integer id) { 
-        Trainee trainee = new Trainee();
-        trainee = employeeDAO.retrieveTraineeById(id); 
-        return trainee;
+    public TraineeDto getTraineeById(Integer id) {
+        TraineeDto traineeDto = null;
+        Optional<Trainee> trainee = Optional.ofNullable(employeeDAO.retrieveTraineeById(id));
+        if (trainee.isPresent()) {
+            traineeDto = TraineeMapper.convertTraineeToTraineeDto(trainee.get());
+        }
+        return traineeDto;
     }
 
     /**
@@ -191,12 +207,13 @@ public class EmployeeServiceImpl implements EmployeeService {
      * details for the particular key. 
      * </p>
      *
-     * @param trainee
+     * @param traineeDto
      * @return String
      */
-    public void updateTraineeById(Trainee trainee) {
-                employeeDAO.updateTraineeById(trainee);
-            }
+    public void updateTraineeById(TraineeDto traineeDto) {
+        Trainee trainee = TraineeMapper.convertTraineeDtoToTrainee(traineeDto);
+        employeeDAO.updateTraineeById(trainee);
+    }
 
 
     /**

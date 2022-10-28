@@ -1,21 +1,22 @@
 package com.ideas2it.controller;
 
+import com.ideas2it.dto.SkillDto;
+import com.ideas2it.dto.TraineeDto;
+import com.ideas2it.dto.TrainerDto;
 import com.ideas2it.model.Skills;
 import com.ideas2it.model.Trainee;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ideas2it.model.Trainer;
 import com.ideas2it.service.inter.EmployeeService;
 
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 public class EmployeeController {
@@ -26,105 +27,150 @@ public class EmployeeController {
         this.employeeService = employeeService;
     }
 
+    /**
+     *
+     * 	To Show Index Page
+     *
+     * @return index page
+     */
     @RequestMapping("/")
     public String index() {
         return "index";
     }
 
-    /*
-     * @RequestMapping(value = "/CreateTrainer") public String
-     * insertTrainer(@ModelAttribute Trainer trainer) {
-     * employeeService.addTrainer(trainer); return "redirect:/ViewTrainer"; }
+    /**
+     *
+     * To Show Trainer Form
+     *
+     * @return modelAndView - to show insertTrainer page
      */
-
     @GetMapping(value = "/CreateTrainer")
-    public ModelAndView showTrainerForm() {
+    public String showTrainerForm(Model model) {
         System.out.println("Controller Entered");
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("trainer", new Trainer());
-        modelAndView.addObject("action", "insertTrainer");
-        modelAndView.setViewName("CreateTrainer");
-        return modelAndView;
+        model.addAttribute("trainerDto", new TrainerDto());
+        model.addAttribute("action", "insertTrainer");
+        return "CreateTrainer";
     }
 
+    /**
+     *
+     * To Show Trainee Form
+     *
+     * @return modelAndView - to show insertTrainee page
+     */
     @GetMapping(value = "/CreateTrainee")
-    public ModelAndView showTraineeForm() {
+    public String showTraineeForm(Model model) {
         System.out.println("Controller Entered");
+        model.addAttribute("traineeDto", new TraineeDto());
+        //model.addAttribute("action", "insertTrainee");
+        return "CreateTrainee";
+    }
+
+    /**
+     * add trainee details to trainee object
+     *
+     * @param traineeDto
+     * @return redirect:/viewTrainees
+     */
+    @RequestMapping(value = "/insertTrainee")
+    public ModelAndView insertTrainee(@ModelAttribute("traineeDto") TraineeDto traineeDto) {
+        int id = employeeService.addTrainee(traineeDto);
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("trainee", new Trainee());
-        modelAndView.addObject("skills", new Skills());
-        modelAndView.addObject("action", "insertTrainee");
-        modelAndView.setViewName("CreateTrainee");
+        modelAndView.addObject("skillDto", new SkillDto());
+        modelAndView.addObject("id", id);
+        modelAndView.setViewName("/CreateSkills");
         return modelAndView;
     }
 
-    @RequestMapping("insertTrainer")
-    public String insertTrainer(@ModelAttribute("trainer") Trainer trainer, RedirectAttributes redirectAttributes) {
+    /**
+     * add trainee skill to skill object
+     *
+     * @param skill, id
+     * @return redirect:/viewTrainees
+     */
+    @RequestMapping(value = "/SaveSkill")
+    public String addSkill(@ModelAttribute("skillDto") SkillDto skill, int id) {
+
+        TraineeDto traineeDto = employeeService.getTraineeById(id);
+        Set<SkillDto> skills = new LinkedHashSet<SkillDto>();
+        skills.add(skill);
+        traineeDto.setSkillsDto(skills);
+        //employeeService.updateTraineeById(updateTrainee);
+        employeeService.updateTraineeById(traineeDto);
+        return ("redirect:/ViewTrainee");
+    }
+
+
+    @RequestMapping(value = "insertTrainer")
+    public String insertTrainer(@ModelAttribute("trainerDto") TrainerDto trainerDto, RedirectAttributes redirectAttributes) {
         Integer employeeId = 0;
         if (redirectAttributes.equals("insertTrainer")) {
             System.out.println("Insert Trainer page Entered");
-            employeeId = employeeService.addTrainer(trainer);
+            employeeId = employeeService.addTrainer(trainerDto);
         } else {
-            employeeService.updateTrainerById(trainer);
+            employeeService.updateTrainerById(trainerDto);
         }
         return "redirect:/ViewTrainer";
     }
 
-    @RequestMapping("insertTrainee")
-    public String insertTrainee(@ModelAttribute("trainee") Trainee trainee, RedirectAttributes redirectAttributes) {
-        Integer employeeId = 0;
-        if (redirectAttributes.equals("insertTrainee")) {
-            System.out.println("Insert Trainee page Entered");
-            employeeId = employeeService.addTrainee(trainee);
-        } else {
-            employeeService.updateTraineeById(trainee);
-        }
-        return "redirect:/ViewTrainee";
-    }
-
     @RequestMapping (value = "/ViewTrainer")
     public ModelAndView viewTrainer() {
-        List<Trainer> trainers = employeeService.getAllTrainers();
+        List<TrainerDto> trainersDto = employeeService.getAllTrainers();
         ModelAndView modelAndView = new ModelAndView("ViewTrainer");
-        modelAndView.addObject("trainers", trainers);
+        modelAndView.addObject("trainersDto", trainersDto);
         return modelAndView;
     }
 
     @RequestMapping (value = "/ViewTrainee")
     public ModelAndView viewTrainee() {
-        List<Trainee> trainees = employeeService.getAllTrainees();
+        List<TraineeDto> traineesDto = employeeService.getAllTrainees();
         ModelAndView modelAndView = new ModelAndView("ViewTrainee");
-        modelAndView.addObject("trainees", trainees);
+        modelAndView.addObject("traineesDto", traineesDto);
         return modelAndView;
     }
 
-    @GetMapping("/updateTrainer")
-    public String getTrainerById(@RequestParam("id") int trainerId, Model model) {
-        Trainer trainer = employeeService.getTrainerById(trainerId);
-        model.addAttribute("trainer", trainer);
-        model.addAttribute("action", "updateTrainer");
-        return "updateTrainer";
+    @RequestMapping("updateTrainer")
+    public String updateTrainer(@ModelAttribute("trainerDto") TrainerDto trainerDto) {
+        employeeService.updateTrainerById(trainerDto);
+        return "redirect:/ViewTrainer";
+    }
+    @RequestMapping(value = "/getTrainerById")
+    public ModelAndView getTrainerById(@RequestParam int id) {
+        TrainerDto trainerDto = employeeService.getTrainerById(id);
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("trainerDto", trainerDto);
+        modelAndView.setViewName("UpdateTrainer");
+        return modelAndView;
     }
 
-    @GetMapping("/updateTrainee")
-    public String getTraineeById(@RequestParam("id") int traineeId, Model model) {
-        Trainee trainee = employeeService.getTraineeById(traineeId);
-        model.addAttribute("trainee", trainee);
-        model.addAttribute("action", "updateTrainee");
-        return "insertTrainee";
+    @RequestMapping(value = "/getTraineeById")
+    public ModelAndView getTraineeById(@RequestParam int id) {
+        TraineeDto traineeDto = employeeService.getTraineeById(id);
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("traineeDto", traineeDto);
+        modelAndView.setViewName("UpdateTrainee");
+        return modelAndView;
     }
+
+    @RequestMapping("updateTrainee")
+    public String updateTrainee(@ModelAttribute("traineeDto") TraineeDto traineeDto) {
+        TraineeDto trainee1 = employeeService.getTraineeById(traineeDto.getId());
+        Set<SkillDto> skills = trainee1.getSkillsDto();
+        traineeDto.setSkillsDto(skills);
+        employeeService.updateTraineeById(traineeDto);
+        return ("redirect:/ViewTrainee");
+    }
+
 
     @GetMapping("/deleteTrainer")
     public String deleteTrainer(@RequestParam int id, RedirectAttributes redirectAttributes)  {
         employeeService.deleteTrainerById(id);
-        //  redirectAttributes.addFlashAttribute("msg",id + " SuccessFully Deleted");
         return "redirect:/ViewTrainer";
     }
 
     @GetMapping("/deleteTrainee")
     public String deleteTrainee(@RequestParam int id, RedirectAttributes redirectAttributes) {
         employeeService.deleteTraineeById(id);
-        //  redirectAttributes.addFlashAttribute("msg",id + " SuccessFully Deleted");
         return "redirect:/ViewTrainee";
     }
 }
